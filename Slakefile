@@ -5,7 +5,6 @@ option 'currentfile' 'Latest file that triggered the save' 'FILE'
 
 externalScripts =
     \http://service.ihned.cz/js/d3/v3.3.2.min.js
-    \http://service.ihned.cz/js/tooltip/v1.1.4.d3.min.js
     ...
 
 externalStyles =
@@ -13,6 +12,7 @@ externalStyles =
     ...
 
 externalData =
+    demografie: "#__dirname/data/volby_demo_abs_trimmed_dot.csv"
     style: "#__dirname/www/screen.css"
 
 preferScripts = <[ postInit.js _loadData.js ../data.js init.js _loadExternal.js]>
