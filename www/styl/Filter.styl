@@ -14,9 +14,14 @@
         .extent
             fill-opacity 0.02
             shape-rendering crispEdges
+        .axisLine
+            shape-rendering crispEdges
+            stroke darken(HNBlue, 30%)
+
         .resize
             rect.border
-                fill-opacity 0.1
+                fill HNBlue
+                fill-opacity 0.4
     text.heading
         font-size 0.8em
         text-transform uppercase
@@ -28,5 +33,11 @@
         .tick
             line
                 stroke #a5
-        text
-            font-size 0.7em
+                shape-rendering crispEdges
+            text
+                font-size 0.7em
+            &.active
+                text
+                    fill darken(HNBlue, 30%)
+                line
+                    stroke darken(HNBlue, 30%)

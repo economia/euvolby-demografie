@@ -24,6 +24,8 @@ ig.Filter = class Filter
             ..attr \class \filter
             ..attr \height @height + @padding.0 + @padding.2
             ..attr \width @width + @padding.1 + @padding.3
+        @axesGroup = @element.append \g
+            ..attr \class \axis
         @canvas = @element.append \g
             ..attr \transform "translate(#{@padding.3}, #{@padding.0})"
         @fullDataGroup = @canvas.append \g
@@ -45,6 +47,10 @@ ig.Filter = class Filter
 
     onBrush: ->
         extent = @brush.extent!
+        @brushExtentLine
+            ..attr \x1 @x extent.0
+            ..attr \x2 @x extent.1
+        @xAxisTexts.classed \active ~> extent.0 < it < extent.1
         if @sqrtAxis
             extent .= map -> it^2
         @onChange @property, extent
@@ -102,9 +108,12 @@ ig.Filter = class Filter
                 ..append \rect
                     ..attr \class \border
                     ..attr \width 1
-
             ..selectAll \rect
                 ..attr \height @height
+        @brushExtentLine = brushG.append \line
+            ..attr \class "axisLine"
+            ..attr \y1 @height + 2
+            ..attr \y2 @height + 2
         if @property == \verici
             <~ setTimeout _, 10
             @brush.event brushG
@@ -119,11 +128,12 @@ ig.Filter = class Filter
             ..tickSize 4
             ..outerTickSize 0
             ..orient \bottom
-        @xAxisGroup = @element.append \g
+        @xAxisGroup = @axesGroup.append \g
             ..attr \class "axis x"
             ..attr \transform "translate(0, #{@height + @padding.0 + 2})"
             ..call xAxis
-            ..selectAll \text
-                ..attr \dy 8
             ..select "g.tick:first-child text"
                 ..attr \dx 8
+            ..selectAll \text
+                ..attr \dy 8
+        @xAxisTexts = @xAxisGroup.selectAll \.tick
