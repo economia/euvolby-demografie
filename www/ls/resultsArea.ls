@@ -27,7 +27,7 @@ names =
 ig.ResultsArea = class ResultsArea
     height: 150
     width: 965
-    padding: [0 0 40 15]
+    padding: [10 0 40 15]
     (container, @parties) ->
         @validParties = @parties.filter (.abbr != "Nevolici")
 
@@ -81,9 +81,21 @@ ig.ResultsArea = class ResultsArea
             ..attr \width 80
             ..attr \text-anchor \middle
 
+        @partyResult = @parties.append \text
+            ..attr \class \partyResult
+            ..html ~> "#{(it.defaultPercent * 100).toFixed 2 .replace "." ","} %"
+            ..attr \y 35
+            ..attr \x 25
+            ..attr \width 80
+            ..attr \text-anchor \middle
 
-
-
+        @partyDifference = @parties.append \text
+            ..attr \class "partyDifference"
+            ..html ~> ""
+            ..attr \y 50
+            ..attr \x 22
+            ..attr \width 80
+            ..attr \text-anchor \middle
 
     redraw: ->
         votes = sum @validParties.map (.sum)
@@ -104,6 +116,13 @@ ig.ResultsArea = class ResultsArea
                     @height - @y it.defaultPercent
                 else
                     @height - @y it.currentPercent
+        @partyResult.html ~> "#{(it.currentPercent * 100).toFixed 2 .replace "." ","} %"
+        @partyDifference.html ~>
+            diff = it.currentPercent - it.defaultPercent
+            str = if diff > 0 then "+" else "-"
+            str += " #{(Math.abs diff * 100).toFixed 2 .replace "." ","} %"
+            str
+
 
 
 sum = (arr) ->
