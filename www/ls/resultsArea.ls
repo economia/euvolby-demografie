@@ -75,27 +75,21 @@ ig.ResultsArea = class ResultsArea
 
         @parties.append \text
             ..attr \class \partyName
-            ..html ~> names[it.abbr]
-            ..attr \y 18# @height + 20
+            ..text ~> names[it.abbr]
+            ..attr \y 3# @height + 20
             ..attr \x 25
-            ..attr \width 80
-            ..attr \text-anchor \middle
 
         @partyResult = @parties.append \text
             ..attr \class \partyResult
-            ..html ~> "#{(it.defaultPercent * 100).toFixed 2 .replace "." ","} %"
-            ..attr \y 35
+            ..text ~> "#{(it.defaultPercent * 100).toFixed 2 .replace "." ","} %"
+            ..attr \y 20
             ..attr \x 25
-            ..attr \width 80
-            ..attr \text-anchor \middle
 
         @partyDifference = @parties.append \text
             ..attr \class "partyDifference"
-            ..html ~> ""
-            ..attr \y 50
+            ..text ~> ""
+            ..attr \y 35
             ..attr \x 22
-            ..attr \width 80
-            ..attr \text-anchor \middle
 
     redraw: ->
         votes = sum @validParties.map (.sum)

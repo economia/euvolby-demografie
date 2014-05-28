@@ -47,14 +47,15 @@ ig.Filter = class Filter
         @drawAxes!
         @element.append \text
             ..attr \class \heading
-            ..html propertyNames[@property]
+            ..text propertyNames[@property]
             ..attr \y 16
+            ..attr \x 0
         @selectionText = @element.append \text
             ..attr \class \selection
             ..attr \y 32
         @cancelSelectionText = @element.append \text
             ..attr \class \cancelSelection
-            ..html "[zrušit výběr]"
+            ..text "[zrušit výběr]"
             ..attr \y 32
             ..attr \dx 6
             ..on \click @~cancelBrush
@@ -67,9 +68,9 @@ ig.Filter = class Filter
             ..attr \x2 @x extent.1
         @xAxisTexts.classed \active ~> extent.0 < it < extent.1
         if @property == \vek_prumer
-            @selectionText.html "Vybrány pouze obce mezi #{extent.0.toFixed 1} &ndash; #{extent.1.toFixed 1}"
+            @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} – #{extent.1.toFixed 1}"
         else
-            @selectionText.html "Vybrány pouze obce mezi #{extent.0.toFixed 1} % &ndash; #{extent.1.toFixed 1} %"
+            @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} % – #{extent.1.toFixed 1} %"
         {width:textWidth} = @selectionText.0.0.getBBox!
         @cancelSelectionText.attr \x textWidth
         if @sqrtAxis
@@ -79,7 +80,7 @@ ig.Filter = class Filter
     cancelBrush: ->
         @brush.clear!
         @brushG.call @brush
-        @selectionText.html ""
+        @selectionText.text ""
         @xAxisTexts.classed \active no
         @cancelSelectionText.attr \x null
         @onChange @property, null
