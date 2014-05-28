@@ -21,25 +21,21 @@ resultsArea = new ig.ResultsArea do
     resultsAreaContainer
     parties
 
-window.resultsArea = resultsArea
-window.parties = parties
-window.partyAbbrs = partyAbbrs
+recountPartySums = (lines) ->
+    for party in parties => party.sum = 0
+    for line in lines
+        for abbr, index in partyAbbrs
+            parties[index].sum += line[abbr]
 
-for line in demografie
-    for abbr, index in partyAbbrs
-        parties[index].sum += line[abbr]
-
-# parties.0.sum = 20
+recountPartySums demografie
 resultsArea.redraw!
+filterConnector = (newData) ->
+    newDataLength = newData.length
+    for filter in filters => filter.setCurrentData newData, newDataLength
+    recountPartySums newData
+    resultsArea.redraw!
 multiFilter = new ig.MultiFilter demografie
-    ..onRecomputed = (newData) ->
-        newDataLength = newData.length
-        for filter in filters => filter.setCurrentData newData, newDataLength
-        parties.forEach (.sum = 0)
-        for line in newData
-            for abbr, index in partyAbbrs
-                parties[index].sum += line[abbr]
-        resultsArea.redraw!
+    ..onRecomputed = filterConnector
 filterContainer = container.append \div
     ..attr \class \filterContainer
 filters = for property, index in <[mimo_byty verici vek_prumer vdani vzdelani_zakladni vzdelani_stredni vzdelani_maturita vzdelani_vysoka prac_studenti nikdy_nezamestnani studenti nezamestnani zamestnani podnikatele osvc]>
