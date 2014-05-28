@@ -80,6 +80,7 @@ ig.Filter = class Filter
         @brush.clear!
         @brushG.call @brush
         @selectionText.html ""
+        @xAxisTexts.classed \active no
         @cancelSelectionText.attr \x null
         @onChange @property, null
 
