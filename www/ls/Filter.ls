@@ -30,6 +30,7 @@ ig.Filter = class Filter
             ..attr \class \fullData
         @currentDataGroup = @canvas.append \g
             ..attr \class \currentData
+        @sqrtAxis = @property in <[mimo_byty vzdelani_zakladni]>
         @createHistogram!
         bins = @histogram @data
         @computeScales bins
@@ -43,6 +44,8 @@ ig.Filter = class Filter
 
     onBrush: ->
         extent = @brush.extent!
+        if @sqrtAxis
+            extent .= map -> it^2
         @onChange @property, extent
 
     setCurrentData: (currentData) ->
@@ -59,6 +62,7 @@ ig.Filter = class Filter
         minX = bins[0].x
         maxX = bins[* - 1].x + bins[* - 1].dx
         @x = d3.scale.linear!
+        @x
             ..domain [minX, maxX]
             ..range [0, @width]
         @histogram.range [minX, maxX]
@@ -81,6 +85,8 @@ ig.Filter = class Filter
         @histogram = d3.layout.histogram!
             ..value ~> it[@property]
             ..bins 40
+        if @sqrtAxis
+            @histogram.value ~> Math.sqrt it[@property]
         range = @histogram.range!
 
     prepareBrush: ->
