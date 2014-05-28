@@ -46,8 +46,13 @@ ig.Filter = class Filter
             ..attr \y 16
         @selectionText = @element.append \text
             ..attr \class \selection
-            # ..html "Všechny obce"
             ..attr \y 32
+        @cancelSelectionText = @element.append \text
+            ..attr \class \cancelSelection
+            ..html "[zrušit výběr]"
+            ..attr \y 32
+            ..attr \dx 6
+            ..on \click @~cancelBrush
 
     onBrush: ->
         extent = @brush.extent!
@@ -55,10 +60,22 @@ ig.Filter = class Filter
             ..attr \x1 @x extent.0
             ..attr \x2 @x extent.1
         @xAxisTexts.classed \active ~> extent.0 < it < extent.1
-        @selectionText.html "Pouze obce mezi #{extent.0.toFixed 1} % &ndash; #{extent.1.toFixed 1} %"
+        if @property == \vek_prumer
+            @selectionText.html "Vybrány pouze obce mezi #{extent.0.toFixed 1} &ndash; #{extent.1.toFixed 1}"
+        else
+            @selectionText.html "Vybrány pouze obce mezi #{extent.0.toFixed 1} % &ndash; #{extent.1.toFixed 1} %"
+        {width:textWidth} = @selectionText.0.0.getBBox!
+        @cancelSelectionText.attr \x textWidth
         if @sqrtAxis
             extent .= map -> it^2
         @onChange @property, extent
+
+    cancelBrush: ->
+        @brush.clear!
+        @brushG.call @brush
+        @selectionText.html ""
+        @cancelSelectionText.attr \x null
+        @onChange @property, null
 
     setCurrentData: (currentData) ->
         @currentDataBars
@@ -106,7 +123,7 @@ ig.Filter = class Filter
             ..on \brush @~onBrush
         if @property == \verici
             @brush.extent [30 80]
-        brushG = @canvas.append \g
+        @brushG = @canvas.append \g
             ..attr \class \brush
             ..call @brush
             ..selectAll \.resize
@@ -115,13 +132,13 @@ ig.Filter = class Filter
                     ..attr \width 1
             ..selectAll \rect
                 ..attr \height @height
-        @brushExtentLine = brushG.append \line
+        @brushExtentLine = @brushG.append \line
             ..attr \class "axisLine"
             ..attr \y1 @height + 2
             ..attr \y2 @height + 2
         if @property == \verici
             <~ setTimeout _, 10
-            @brush.event brushG
+            @brush.event @brushG
 
     drawAxes: ->
         xAxis = d3.svg.axis!

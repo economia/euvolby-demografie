@@ -29,8 +29,18 @@
     text.selection
         font-size 0.6em
         text-transform uppercase
-        font-variant small-caps
         fill #3
+    text.cancelSelection
+        font-size 0.6em
+        text-transform uppercase
+        visibility hidden
+        fill darken(HNBlue, 30%)
+        cursor pointer
+        &[x]
+            visibility visible
+        &:hover
+            fill HNBlue
+
     .axis
         path
             shape-rendering crispEdges
