@@ -18,7 +18,7 @@ propertyNames =
 ig.Filter = class Filter
     height: 100
     width: 430
-    padding: [35 0 20 0]
+    padding: [35 4 20 1]
     (@data, @property, parentElement) ->
         @element = parentElement.append \svg
             ..attr \class \filter
@@ -37,6 +37,7 @@ ig.Filter = class Filter
         @drawData @fullDataGroup, bins
         @currentDataBars = @drawData @currentDataGroup, bins
         @prepareBrush!
+        @drawAxes!
         @element.append \text
             ..attr \class \heading
             ..html propertyNames[@property]
@@ -108,3 +109,22 @@ ig.Filter = class Filter
         if @property == \verici
             <~ setTimeout _, 10
             @brush.event brushG
+
+    drawAxes: ->
+        xAxis = d3.svg.axis!
+            ..scale @x
+            ..tickFormat ~>
+                | @sqrtAxis and it > 0 => "#{(Math.sqrt it).toFixed 1}%"
+                | @property == \vek_prumer => "#it"
+                | otherwise => "#it%"
+            ..tickSize 4
+            ..outerTickSize 0
+            ..orient \bottom
+        @xAxisGroup = @element.append \g
+            ..attr \class "axis x"
+            ..attr \transform "translate(0, #{@height + @padding.0 + 2})"
+            ..call xAxis
+            ..selectAll \text
+                ..attr \dy 8
+            ..select "g.tick:first-child text"
+                ..attr \dx 8
