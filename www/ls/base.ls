@@ -15,11 +15,6 @@ parties = for abbr in partyAbbrs
     new ig.Party abbr
 
 container = d3.select ig.containers.base
-resultsAreaContainer = container.append \div
-    ..attr \class \resultsAreaContainer
-resultsArea = new ig.ResultsArea do
-    resultsAreaContainer
-    parties
 
 recountPartySums = (lines) ->
     for party in parties => party.sum = 0
@@ -28,6 +23,9 @@ recountPartySums = (lines) ->
             parties[index].sum += line[abbr]
 
 recountPartySums demografie
+resultsArea = new ig.ResultsArea do
+    container
+    parties
 resultsArea.redraw!
 filterConnector = (newData) ->
     newDataLength = newData.length
