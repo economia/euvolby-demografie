@@ -11,7 +11,6 @@ ig.ResultsArea = class ResultsArea
         votes = sum @validParties.map (.sum)
         @bars.select \div.sum .html (.sum)
         @bars.select \div.perc .html -> (it.sum / votes * 100).toFixed 2
-        console.log 'foo'
 
 sum = (arr) ->
     arr.reduce do
