@@ -1,9 +1,11 @@
 &
+    &:nth-child(even)
+        margin-left 40px
     rect
         shape-rendering crispEdges
     g.fullData
         rect
-            fill #aaa
+            fill #d8
     g.currentData
         rect
             fill HNBlue
@@ -14,3 +16,7 @@
         .resize
             rect.border
                 fill-opacity 0.1
+    text.heading
+        font-size 0.8em
+        text-transform uppercase
+        fill #666

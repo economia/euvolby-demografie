@@ -1,21 +1,45 @@
+propertyNames =
+    mimo_byty          : "Podíl lidí mimo byty"
+    verici             : "Podíl věřících"
+    vek_prumer         : "Věkový průměr"
+    vdani              : "Podíl vdaných"
+    vzdelani_zakladni  : "Lidé s pouze základním vzděláním"
+    vzdelani_stredni   : "Lidé se střední školou bez maturity"
+    vzdelani_maturita  : "Lidé s maturitou"
+    vzdelani_vysoka    : "Lidé s vysokou školou"
+    prac_studenti      : "Podíl pracujících studentů"
+    nikdy_nezamestnani : "Podíl nikdy nezaměstnaných"
+    studenti           : "Podíl studentů"
+    nezamestnani       : "Podíl nezaměstnaných"
+    zamestnani         : "Podíl zaměstnanců"
+    podnikatele        : "Podíl podnikatelů"
+    osvc               : "Podíl OSVČ"
+
 ig.Filter = class Filter
     height: 100
-    width: 400
+    width: 430
+    padding: [35 0 20 0]
     (@data, @property, parentElement) ->
         @element = parentElement.append \svg
             ..attr \class \filter
-            ..attr \height @height
-            ..attr \width @width
-        @createHistogram!
-        @fullDataGroup = @element.append \g
+            ..attr \height @height + @padding.0 + @padding.2
+            ..attr \width @width + @padding.1 + @padding.3
+        @canvas = @element.append \g
+            ..attr \transform "translate(#{@padding.3}, #{@padding.0})"
+        @fullDataGroup = @canvas.append \g
             ..attr \class \fullData
-        @currentDataGroup = @element.append \g
+        @currentDataGroup = @canvas.append \g
             ..attr \class \currentData
+        @createHistogram!
         bins = @histogram @data
         @computeScales bins
         @drawData @fullDataGroup, bins
         @currentDataBars = @drawData @currentDataGroup, bins
         @prepareBrush!
+        @element.append \text
+            ..attr \class \heading
+            ..html propertyNames[@property]
+            ..attr \y 16
 
     onBrush: ->
         extent = @brush.extent!
@@ -65,7 +89,7 @@ ig.Filter = class Filter
             ..on \brush @~onBrush
         if @property == \verici
             @brush.extent [30 80]
-        brushG = @element.append \g
+        brushG = @canvas.append \g
             ..attr \class \brush
             ..call @brush
             ..selectAll \.resize
