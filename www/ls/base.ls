@@ -33,7 +33,8 @@ for line in demografie
 resultsArea.redraw!
 multiFilter = new ig.MultiFilter demografie
     ..onRecomputed = (newData) ->
-        for filter in filters => filter.setCurrentData newData
+        newDataLength = newData.length
+        for filter in filters => filter.setCurrentData newData, newDataLength
         parties.forEach (.sum = 0)
         for line in newData
             for abbr, index in partyAbbrs

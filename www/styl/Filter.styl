@@ -10,6 +10,11 @@
     g.currentData
         rect
             fill HNBlue
+    line.median
+        stroke #9
+        shape-rendering crispEdges
+        &.currentData
+            stroke darken(HNBlue, 40%)
     g.brush
         .extent
             fill-opacity 0.02

@@ -20,6 +20,8 @@ ig.Filter = class Filter
     width: 430
     padding: [45 4 20 1]
     (@data, @property, parentElement) ->
+        @localSortedData = @data.slice 0
+            .sort (a, b) ~> a[@property] - b[@property]
         @element = parentElement.append \svg
             ..attr \class \filter
             ..attr \height @height + @padding.0 + @padding.2
@@ -34,10 +36,13 @@ ig.Filter = class Filter
             ..attr \class \currentData
         @sqrtAxis = @property in <[mimo_byty vzdelani_zakladni]>
         @createHistogram!
-        bins = @histogram @data
+        bins = @histogram @localSortedData
         @computeScales bins
         @drawData @fullDataGroup, bins
         @currentDataBars = @drawData @currentDataGroup, bins
+        @drawMedian @canvas, @localSortedData
+        @currentMedian = @drawMedian @canvas, @localSortedData
+            ..classed \currentData yes
         @prepareBrush!
         @drawAxes!
         @element.append \text
@@ -53,6 +58,7 @@ ig.Filter = class Filter
             ..attr \y 32
             ..attr \dx 6
             ..on \click @~cancelBrush
+
 
     onBrush: ->
         extent = @brush.extent!
@@ -77,15 +83,27 @@ ig.Filter = class Filter
         @cancelSelectionText.attr \x null
         @onChange @property, null
 
-    setCurrentData: (currentData) ->
+    setCurrentData: (currentData, currentDataLength) ->
+        medianPosition = Math.round currentDataLength / 2
+        totalCount = 0
+        subMedianInvalidCount = 0
         @currentDataBars
             ..attr \height ~>
                 count = 0
                 for item in it
-                    count++ if item.valid
+                    if item.valid
+                        totalCount++
+                        count++
+                    else if totalCount < medianPosition
+                        subMedianInvalidCount++
+
                 it.height = @y count
             ..attr \y ~> @height - it.height
-
+        median = @localSortedData[medianPosition + subMedianInvalidCount]
+        x = @x median[@property]
+        @currentMedian
+            ..attr \x1 x
+            ..attr \x2 x
 
     computeScales: (bins) ->
         minX = bins[0].x
@@ -107,6 +125,16 @@ ig.Filter = class Filter
             ..attr \height ~> @y it.y
             ..attr \width -2 + @x bins.1.x
             ..attr \y ~> @height - @y it.y
+
+    drawMedian: (parentGroup, sortedData) ->
+        median = sortedData[Math.round sortedData.length / 2]
+        x = @x median[@property]
+        parentGroup.append \line
+            ..attr \class \median
+            ..attr \x1 x
+            ..attr \x2 x
+            ..attr \y1 -5
+            ..attr \y2 @height
 
 
     createHistogram: ->
