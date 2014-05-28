@@ -75,10 +75,9 @@ ig.Filter = class Filter
 
     drawData: (parentGroup, bins) ->
         parentGroup.selectAll \rect .data bins .enter!append \rect
-        parentGroup.selectAll \rect
             ..attr \x ~> @x it.x
             ..attr \height ~> @y it.y
-            ..attr \width ~> (@x it.dx) - 2
+            ..attr \width -2 + @x bins.1.x
             ..attr \y ~> @height - @y it.y
 
 
