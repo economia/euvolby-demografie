@@ -18,7 +18,7 @@ propertyNames =
 ig.Filter = class Filter
     height: 100
     width: 430
-    padding: [35 4 20 1]
+    padding: [45 4 20 1]
     (@data, @property, parentElement) ->
         @element = parentElement.append \svg
             ..attr \class \filter
@@ -44,6 +44,10 @@ ig.Filter = class Filter
             ..attr \class \heading
             ..html propertyNames[@property]
             ..attr \y 16
+        @selectionText = @element.append \text
+            ..attr \class \selection
+            # ..html "Všechny obce"
+            ..attr \y 32
 
     onBrush: ->
         extent = @brush.extent!
@@ -51,6 +55,7 @@ ig.Filter = class Filter
             ..attr \x1 @x extent.0
             ..attr \x2 @x extent.1
         @xAxisTexts.classed \active ~> extent.0 < it < extent.1
+        @selectionText.html "Pouze obce mezi #{extent.0.toFixed 1} % &ndash; #{extent.1.toFixed 1} %"
         if @sqrtAxis
             extent .= map -> it^2
         @onChange @property, extent
@@ -122,7 +127,7 @@ ig.Filter = class Filter
         xAxis = d3.svg.axis!
             ..scale @x
             ..tickFormat ~>
-                | @sqrtAxis and it > 0 => "#{(Math.sqrt it).toFixed 1}%"
+                | @sqrtAxis and it > 0 => "#{it}%"
                 | @property == \vek_prumer => "#it"
                 | otherwise => "#it%"
             ..tickSize 4
