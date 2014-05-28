@@ -132,8 +132,9 @@ ig.Filter = class Filter
             ..attr \class "axis x"
             ..attr \transform "translate(0, #{@height + @padding.0 + 2})"
             ..call xAxis
-            ..select "g.tick:first-child text"
-                ..attr \dx 8
             ..selectAll \text
                 ..attr \dy 8
+        if @x.domain!.0 == 0
+            @xAxisGroup.select "g.tick:first-child text"
+                ..attr \dx 8
         @xAxisTexts = @xAxisGroup.selectAll \.tick
