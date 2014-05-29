@@ -39,3 +39,10 @@ filterContainer = container.append \div
 filters = for property, index in <[mimo_byty verici vek_prumer vdani vzdelani_zakladni vzdelani_stredni vzdelani_maturita vzdelani_vysoka prac_studenti nikdy_nezamestnani studenti nezamestnani zamestnani podnikatele osvc]>
     new ig.Filter demografie, property, filterContainer
         ..onChange = multiFilter~onFilterChange
+
+{top: containerOffset} = ig.utils.offset ig.containers.base
+
+document.addEventListener \scroll ->
+    resultsArea.element.classed \fixed window.pageYOffset > containerOffset
+
+

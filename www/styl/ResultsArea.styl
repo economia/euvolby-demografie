@@ -1,7 +1,17 @@
 &
     position absolute
+    background white
+    z-index 2
+    padding-bottom 30px
     top 0px
-    left 0px
+    &.fixed
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 90%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(90%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,0) 100%); /* IE10+ */
+        background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 90%,rgba(255,255,255,0) 100%); /* W3C */
+        position fixed
     .zeroLine
         stroke #6
         shape-rendering crispEdges
