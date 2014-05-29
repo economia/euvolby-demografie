@@ -110,6 +110,12 @@ ig.ResultsArea = class ResultsArea
             ..text "všichni voliči"
             ..attr \y 35
 
+        @canvas.append \text
+            ..attr \class \zero
+            ..text "0"
+            ..attr \x -14
+            ..attr \y 165
+
     redraw: ->
         people = computePercent @validParties, 'currentPercent'
         totalPercentStr = people / @sum * 100
