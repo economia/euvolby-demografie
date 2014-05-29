@@ -21,6 +21,9 @@ descriptions =
     nikdy_nezamestnani : "Lidé, kteří nikdy neměli práci"
     podnikatele : "Zaměstnavatelé, vlastníci firem"
     velikostObce: "Tažením myši vyberete část grafu, která vás zajímá"
+    mimo_byty: "Lidé bez stálého domova, kteří bydlí například na ubytovnách"
+    zamestnani: "Lidé pracující v nějakém typu pracovního poměru (DPP, HPP…)"
+    osvc: "Drobní živnostníci"
 
 ig.Filter = class Filter
     height: 100
