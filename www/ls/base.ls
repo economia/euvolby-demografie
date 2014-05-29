@@ -1,3 +1,7 @@
+if \undefined != typeof $
+    <~ $
+    $ '#col12d-article #detail #text, #perex, H1, .discussion-content .row .r' .unbind!
+
 lines = ig.data.demografie.split "\n"
     ..pop! # header
     ..shift! # newline on EOF
