@@ -86,6 +86,8 @@ ig.Filter = class Filter
         @onChange @property, extent
 
     cancelBrush: ->
+        extent = @brush.extent!
+        return if extent.0 == extent.1 == 0
         @brush.clear!
         @brushG.call @brush
         @selectionText.text ""
