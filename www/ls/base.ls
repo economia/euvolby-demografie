@@ -26,7 +26,9 @@ recountPartySums demografie
 resultsArea = new ig.ResultsArea do
     container
     parties
+
 resultsArea.redraw!
+
 filterConnector = (newData) ->
     newDataLength = newData.length
     for filter in filters => filter.setCurrentData newData, newDataLength
@@ -45,4 +47,5 @@ filters = for property, index in <[mimo_byty verici vek_prumer vdani vzdelani_za
 document.addEventListener \scroll ->
     resultsArea.element.classed \fixed window.pageYOffset > containerOffset
 
-
+resultsArea.disableButton.on \click ->
+    for filter in filters => filter.cancelBrush!

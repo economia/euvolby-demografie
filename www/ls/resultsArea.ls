@@ -45,7 +45,7 @@ ig.ResultsArea = class ResultsArea
             ..domain [0 0.25]
             ..range [0 @height]
 
-        computePercent @validParties, "defaultPercent"
+        @sum = computePercent @validParties, "defaultPercent"
 
         @validParties.sort (a, b) ->
             | a.abbr == \Nevolici => +1
@@ -56,23 +56,23 @@ ig.ResultsArea = class ResultsArea
 
         @parties = @canvas.selectAll \g.party .data @validParties .enter!append \g
             ..attr \class \party
-            ..attr \transform (d, i) -> "translate(#{i * 80}, 0)"
+            ..attr \transform (d, i) -> "translate(#{i * 73}, 0)"
         @defaultValues = @parties.append \rect
             ..attr \class \default
             ..attr \height ~> @y it.defaultPercent
             ..attr \y ~> @height - @y it.defaultPercent
-            ..attr \width 80 - 30
+            ..attr \width 73 - 30
             ..attr \fill ~> colors[it.abbr]
         @currentValues = @parties.append \rect
             ..attr \class \diff
             ..attr \height ~> @y it.defaultPercent
             ..attr \y ~> @height - @y it.defaultPercent
-            ..attr \width 80 - 30
+            ..attr \width 73 - 30
 
         @canvas.append \line
             ..attr \class \zeroLine
             ..attr \x1 0 - @padding.3
-            ..attr \x2 @width + @padding.1
+            ..attr \x2 @width + @padding.1 - 105
             ..attr \y1 @height
             ..attr \y2 @height
 
@@ -80,22 +80,58 @@ ig.ResultsArea = class ResultsArea
             ..attr \class \partyName
             ..text ~> names[it.abbr]
             ..attr \y 3# @height + 20
-            ..attr \x 25
+            ..attr \x 22
 
         @partyResult = @parties.append \text
             ..attr \class \partyResult
             ..text ~> "#{(it.defaultPercent * 100).toFixed 2 .replace "." ","} %"
             ..attr \y 20
-            ..attr \x 25
+            ..attr \x 22
 
         @partyDifference = @parties.append \text
             ..attr \class "partyDifference"
             ..text ~> ""
             ..attr \y 35
-            ..attr \x 22
+            ..attr \x 21
+
+        totalsGroup = @canvas.append \g
+            ..attr \class \totals
+            ..attr \transform "translate(910, 0)"
+
+        totalsGroup.append \text
+            ..text "Vybráno"
+            ..attr \y 2
+        @totalPercent = totalsGroup.append \text
+            ..attr \class \percent
+            ..text "100 %"
+            ..attr \y 20
+        @disableButton = totalsGroup.append \text
+            ..attr \class \disableButton
+            ..text "[všichni voliči]"
+            ..attr \y 35
 
     redraw: ->
-        computePercent @validParties, 'currentPercent'
+        people = computePercent @validParties, 'currentPercent'
+        totalPercentStr = people / @sum * 100
+        if totalPercentStr == 100
+            totalPercentStr = "100"
+        else if totalPercentStr < 1 or totalPercentStr > 99
+            totalPercentStr .= toFixed 2
+        else if totalPercentStr < 10 or totalPercentStr > 95
+            totalPercentStr .= toFixed 1
+        else
+            totalPercentStr .= toFixed 0
+        totalPercentStr .= replace "." ","
+
+        @totalPercent.text "#totalPercentStr %"
+        @disableButton.classed \active people != @sum
+        @disableButton.text if people != @sum
+            "[zrušit filtry]"
+        else
+            "[všichni voliči]"
+
+
+
         @currentValues
             ..classed \positive ~> it.currentPercent > it.defaultPercent
             ..attr \height ~>
@@ -134,3 +170,5 @@ computePercent = (parties, type) ->
             party[type] = party.sum / votes
         else
             party[type] = 1 - party.sum / people
+
+    people

@@ -35,3 +35,18 @@
             &.positive
                 fill #91cf60
 
+    .totals
+        text
+            fill darken(desaturate(HNBlue, 50%), 50%)
+            font-variant small-caps
+            text-anchor middle
+            font-size 0.8em
+            &.percent
+                font-size 0.72em
+            &.disableButton
+                font-size 0.8em
+                &.active
+                    fill darken(HNBlue, 30%)
+                    cursor pointer
+                    &:hover
+                        fill HNBlue
