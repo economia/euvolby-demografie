@@ -47,7 +47,9 @@ filters = for property, index in <[verici vek_prumer nezamestnani vdani vzdelani
 {top: containerOffset} = ig.utils.offset ig.containers.base
 
 document.addEventListener \scroll ->
-    resultsArea.element.classed \fixed window.pageYOffset > containerOffset
+    resultsArea.element.classed do
+        \fixed
+        window.pageYOffset > containerOffset and window.pageYOffset < containerOffset + ig.containers.base.offsetHeight - 230
 
 resultsArea.disableButton.on \click ->
     for filter in filters => filter.cancelBrush!
