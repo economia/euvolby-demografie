@@ -10,6 +10,7 @@ colors =
     Svobodni : \#005B46
     Usvit    : \#F49E00
     Ostatni  : \#888888
+    Nevolici : \#333333
 
 names =
     KSCM     : \KSČM
@@ -23,13 +24,14 @@ names =
     Svobodni : \Svob.
     Usvit    : \Úsvit
     Ostatni  : \Ostatni
+    Nevolici : \Účast
 
 ig.ResultsArea = class ResultsArea
     height: 150
     width: 965
     padding: [10 0 40 15]
     (container, @parties) ->
-        @validParties = @parties.filter (.abbr != "Nevolici")
+        @validParties = @parties.slice 0
 
         @element = container.append \svg
             ..attr \height @height + @padding.0 + @padding.2
@@ -43,14 +45,15 @@ ig.ResultsArea = class ResultsArea
             ..domain [0 0.25]
             ..range [0 @height]
 
-        votes = sum @validParties.map (.sum)
+        computePercent @validParties, "defaultPercent"
+
         @validParties.sort (a, b) ->
+            | a.abbr == \Nevolici => +1
+            | b.abbr == \Nevolici => -1
             | a.abbr == \Ostatni => +1
             | b.abbr == \Ostatni => -1
             | otherwise => b.sum - a.sum
 
-        @validParties.forEach ->
-            it.currentPercent = it.defaultPercent = it.sum / votes
         @parties = @canvas.selectAll \g.party .data @validParties .enter!append \g
             ..attr \class \party
             ..attr \transform (d, i) -> "translate(#{i * 80}, 0)"
@@ -92,9 +95,7 @@ ig.ResultsArea = class ResultsArea
             ..attr \x 22
 
     redraw: ->
-        votes = sum @validParties.map (.sum)
-        @validParties.forEach ->
-            it.currentPercent = it.sum / votes
+        computePercent @validParties, 'currentPercent'
         @currentValues
             ..classed \positive ~> it.currentPercent > it.defaultPercent
             ..attr \height ~>
@@ -110,16 +111,26 @@ ig.ResultsArea = class ResultsArea
                     @height - @y it.defaultPercent
                 else
                     @height - @y it.currentPercent
-        @partyResult.html ~> "#{(it.currentPercent * 100).toFixed 2 .replace "." ","} %"
-        @partyDifference.html ~>
+        @partyResult.text ~> "#{(it.currentPercent * 100).toFixed 2 .replace "." ","} %"
+        @partyDifference.text ~>
             diff = it.currentPercent - it.defaultPercent
-            str = if diff > 0 then "+" else "-"
+            str =
+                | diff > 0 => "+"
+                | diff < 0 => "-"
+                | otherwise => "±"
             str += " #{(Math.abs diff * 100).toFixed 2 .replace "." ","} %"
             str
 
 
+computePercent = (parties, type) ->
+    votes = 0
+    people = 0
+    for {sum, abbr} in parties
+        people += sum
+        votes += sum if abbr isnt \Nevolici
 
-sum = (arr) ->
-    arr.reduce do
-        (prev, curr) -> prev += curr
-        0
+    for party in parties
+        if party.abbr isnt \Nevolici
+            party[type] = party.sum / votes
+        else
+            party[type] = 1 - party.sum / people
