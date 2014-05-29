@@ -107,7 +107,7 @@ ig.ResultsArea = class ResultsArea
             ..attr \y 20
         @disableButton = totalsGroup.append \text
             ..attr \class \disableButton
-            ..text "[všichni voliči]"
+            ..text "všichni voliči"
             ..attr \y 35
 
     redraw: ->
@@ -125,10 +125,12 @@ ig.ResultsArea = class ResultsArea
 
         @totalPercent.text "#totalPercentStr %"
         @disableButton.classed \active people != @sum
-        @disableButton.text if people != @sum
-            "[zrušit filtry]"
+        if people != @sum
+            @disableButton.text "[zrušit filtry]"
+            @disableButton.attr \dy 50
         else
-            "[všichni voliči]"
+            @disableButton.text "všichni voliči"
+            @disableButton.attr \dy 0
 
 
 
