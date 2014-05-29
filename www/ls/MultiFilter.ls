@@ -13,7 +13,7 @@ ig.MultiFilter = class MultiFilter
     recompute: ->
         @currentData = @fullData.filter ~>
             for {property, extent} in @filters
-                if not (extent.0 < it[property] < extent.1)
+                if not (extent.0 <= it[property] <= extent.1)
                     it.valid = false
                     return false
             it.valid = true

@@ -66,7 +66,7 @@ ig.Filter = class Filter
         @brushExtentLine
             ..attr \x1 @x extent.0
             ..attr \x2 @x extent.1
-        @xAxisTexts.classed \active ~> extent.0 < it < extent.1
+        @xAxisTexts.classed \active ~> extent.0 <= it <= extent.1
         if @property == \vek_prumer
             @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} – #{extent.1.toFixed 1}"
         else
