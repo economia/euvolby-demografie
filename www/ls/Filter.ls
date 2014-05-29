@@ -63,6 +63,7 @@ ig.Filter = class Filter
 
     onBrush: ->
         extent = @brush.extent!
+        return if extent.0 is extent.1
         @brushExtentLine
             ..attr \x1 @x extent.0
             ..attr \x2 @x extent.1
