@@ -68,14 +68,14 @@ ig.Filter = class Filter
             ..attr \x1 @x extent.0
             ..attr \x2 @x extent.1
         @xAxisTexts.classed \active ~> extent.0 <= it <= extent.1
+        if @sqrtAxis
+            extent .= map -> it^2
         if @property == \vek_prumer
             @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} – #{extent.1.toFixed 1}"
         else
             @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} % – #{extent.1.toFixed 1} %"
         {width:textWidth} = @selectionText.0.0.getBBox!
         @cancelSelectionText.attr \x textWidth
-        if @sqrtAxis
-            extent .= map -> it^2
         @onChange @property, extent
 
     cancelBrush: ->
@@ -177,7 +177,7 @@ ig.Filter = class Filter
         xAxis = d3.svg.axis!
             ..scale @x
             ..tickFormat ~>
-                | @sqrtAxis and it > 0 => "#{it}%"
+                | @sqrtAxis and it > 0 => "#{it ^ 2}%"
                 | @property == \vek_prumer => "#it"
                 | otherwise => "#it%"
             ..tickSize 4
