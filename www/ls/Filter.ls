@@ -159,8 +159,6 @@ ig.Filter = class Filter
         @brush = d3.svg.brush!
             ..x @x
             ..on \brush @~onBrush
-        # if @property == \mimo_byty
-        #     @brush.extent [0.01 1]
         @brushG = @canvas.append \g
             ..attr \class \brush
             ..call @brush
@@ -174,9 +172,6 @@ ig.Filter = class Filter
             ..attr \class "axisLine"
             ..attr \y1 @height + 2
             ..attr \y2 @height + 2
-        # if @property == \mimo_byty
-        #     <~ setTimeout _, 10
-        #     @brush.event @brushG
 
     drawAxes: ->
         xAxis = d3.svg.axis!
