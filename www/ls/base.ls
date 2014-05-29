@@ -9,6 +9,9 @@ demografie = lines.map (line) ->
         if not out.Nevolici => out.Nevolici = 0
         volici = out.KSCM + out.CSSD + out.TOP + out.KDU + out.Pirati + out.ANO + out.ODS + out.SZ + out.Svobodni + out.Usvit + out.Ostatni
         out.ucastPrc = volici / (volici + out.Nevolici) * 100
+        out.velikostObce = volici + out.Nevolici
+        if not out.velikostObce
+            out.velikostObce = 1
         out.valid = yes
         out
 
@@ -40,7 +43,7 @@ multiFilter = new ig.MultiFilter demografie
     ..onRecomputed = filterConnector
 filterContainer = container.append \div
     ..attr \class \filterContainer
-filters = for property, index in <[verici vek_prumer nezamestnani vdani vzdelani_zakladni vzdelani_stredni vzdelani_maturita vzdelani_vysoka ucastPrc mimo_byty prac_studenti nikdy_nezamestnani studenti zamestnani podnikatele osvc]>
+filters = for property, index in <[velikostObce vek_prumer vdani vzdelani_zakladni vzdelani_stredni vzdelani_maturita vzdelani_vysoka verici ucastPrc nezamestnani nikdy_nezamestnani mimo_byty prac_studenti studenti zamestnani podnikatele osvc]>
     new ig.Filter demografie, property, filterContainer
         ..onChange = multiFilter~onFilterChange
 

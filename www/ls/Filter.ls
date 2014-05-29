@@ -15,11 +15,12 @@ propertyNames =
     podnikatele        : "Podíl podnikatelů"
     osvc               : "Podíl OSVČ"
     ucastPrc           : "Volební účast"
+    velikostObce       : "Velikost obce"
 
 descriptions =
     nikdy_nezamestnani : "Lidé, kteří nikdy neměli práci"
     podnikatele : "Zaměstnavatelé, vlastníci firem"
-    verici: "Tažením myši vyberete část grafu, která vás zajímá"
+    velikostObce: "Tažením myši vyberete část grafu, která vás zajímá"
 
 ig.Filter = class Filter
     height: 100
@@ -41,6 +42,7 @@ ig.Filter = class Filter
         @currentDataGroup = @canvas.append \g
             ..attr \class \currentData
         @sqrtAxis = @property in <[mimo_byty vzdelani_zakladni]>
+        @logAxis = @property == \velikostObce
         @createHistogram!
         bins = @histogram @localSortedData
         @computeScales bins
@@ -77,7 +79,9 @@ ig.Filter = class Filter
         @xAxisTexts.classed \active ~> extent.0 <= it <= extent.1
         if @sqrtAxis
             extent .= map -> it^2
-        if @property == \vek_prumer
+        if @logAxis
+            extent .= map -> 10^it
+        if @property == \vek_prumer or @logAxis
             @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} – #{extent.1.toFixed 1}"
         else
             @selectionText.text "Vybrány pouze obce mezi #{extent.0.toFixed 1} % – #{extent.1.toFixed 1} %"
@@ -162,6 +166,8 @@ ig.Filter = class Filter
             ..bins 40
         if @sqrtAxis
             @histogram.value ~> Math.sqrt it[@property]
+        if @logAxis
+            @histogram.value ~> (Math.log it[@property]) / Math.LN10
         range = @histogram.range!
 
     prepareBrush: ->
@@ -187,11 +193,14 @@ ig.Filter = class Filter
             ..scale @x
             ..tickFormat ~>
                 | @sqrtAxis and it > 0 => "#{it ^ 2}%"
+                | @logAxis => "#{ig.utils.formatPrice 10^it}"
                 | @property == \vek_prumer => "#it"
                 | otherwise => "#it%"
             ..tickSize 4
             ..outerTickSize 0
             ..orient \bottom
+        if @logAxis
+            xAxis.tickValues [0 1 2 3 4 5]
         @xAxisGroup = @axesGroup.append \g
             ..attr \class "axis x"
             ..attr \transform "translate(0, #{@height + @padding.0 + 2})"
@@ -202,3 +211,6 @@ ig.Filter = class Filter
             @xAxisGroup.select "g.tick:first-child text"
                 ..attr \dx 8
         @xAxisTexts = @xAxisGroup.selectAll \.tick
+        if @logAxis
+            @xAxisGroup.select "g.tick:last-of-type text"
+                ..attr \dx -10
