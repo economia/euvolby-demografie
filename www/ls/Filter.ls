@@ -90,7 +90,7 @@ ig.Filter = class Filter
         totalCount = 0
         subMedianInvalidCount = 0
         @currentDataBars
-            ..attr \height ~>
+            ..attr \transform ~>
                 count = 0
                 for item in it
                     if item.valid
@@ -98,9 +98,11 @@ ig.Filter = class Filter
                         count++
                     else if totalCount < medianPosition
                         subMedianInvalidCount++
+                height = @y count
+                percentage = height / @height
+                offset = @height - height
+                s = "translate(0, #offset), scale(1, #percentage)"
 
-                it.height = @y count
-            ..attr \y ~> @height - it.height
         median = @localSortedData[medianPosition + subMedianInvalidCount]
         x = @x median[@property]
         @currentMedian
@@ -124,9 +126,14 @@ ig.Filter = class Filter
     drawData: (parentGroup, bins) ->
         parentGroup.selectAll \rect .data bins .enter!append \rect
             ..attr \x ~> @x it.x
-            ..attr \height ~> @y it.y
+            ..attr \height @height
             ..attr \width -2 + @x bins.1.x
-            ..attr \y ~> @height - @y it.y
+            ..attr \transform ~>
+                height = @y it.y
+                scale = height / @height
+                offset = @height - height
+                "translate(0, #offset), scale(1, #scale)"
+            ..attr \y 0
 
     drawMedian: (parentGroup, sortedData) ->
         median = sortedData[Math.round sortedData.length / 2]
