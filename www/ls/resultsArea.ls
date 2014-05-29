@@ -118,6 +118,7 @@ ig.ResultsArea = class ResultsArea
 
     redraw: ->
         people = computePercent @validParties, 'currentPercent'
+        return if not people
         totalPercentStr = people / @sum * 100
         if totalPercentStr == 100
             totalPercentStr = "100"
