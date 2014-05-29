@@ -4,7 +4,7 @@ option 'testFile' 'File in (/lib or /test) to run test on' 'FILE'
 option 'currentfile' 'Latest file that triggered the save' 'FILE'
 
 externalScripts =
-    \http://service.ihned.cz/js/d3/v3.3.2.min.js
+    \http://service.ihned.cz/js/d3/v3.4.8.min.js
     ...
 
 externalStyles =
