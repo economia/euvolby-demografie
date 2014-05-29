@@ -7,6 +7,8 @@ demografie = lines.map (line) ->
         out = {KSCM, CSSD, TOP, KDU, Pirati, ANO, ODS, SZ, Svobodni, Usvit, Ostatni, Nevolici, mimo_byty, verici, vek_prumer, vdani, vzdelani_zakladni, vzdelani_stredni, vzdelani_maturita, vzdelani_vysoka, prac_studenti, nikdy_nezamestnani, studenti, nezamestnani, zamestnani, podnikatele, osvc}
         for key, value of out => out[key] = parseFloat value
         if not out.Nevolici => out.Nevolici = 0
+        volici = out.KSCM + out.CSSD + out.TOP + out.KDU + out.Pirati + out.ANO + out.ODS + out.SZ + out.Svobodni + out.Usvit + out.Ostatni
+        out.ucastPrc = volici / (volici + out.Nevolici) * 100
         out.valid = yes
         out
 
@@ -38,7 +40,7 @@ multiFilter = new ig.MultiFilter demografie
     ..onRecomputed = filterConnector
 filterContainer = container.append \div
     ..attr \class \filterContainer
-filters = for property, index in <[mimo_byty verici vek_prumer vdani vzdelani_zakladni vzdelani_stredni vzdelani_maturita vzdelani_vysoka prac_studenti nikdy_nezamestnani studenti nezamestnani zamestnani podnikatele osvc]>
+filters = for property, index in <[verici vek_prumer nezamestnani vdani vzdelani_zakladni vzdelani_stredni vzdelani_maturita vzdelani_vysoka ucastPrc mimo_byty prac_studenti nikdy_nezamestnani studenti zamestnani podnikatele osvc]>
     new ig.Filter demografie, property, filterContainer
         ..onChange = multiFilter~onFilterChange
 
@@ -49,3 +51,13 @@ document.addEventListener \scroll ->
 
 resultsArea.disableButton.on \click ->
     for filter in filters => filter.cancelBrush!
+
+
+container.append \a
+    ..attr \class \dumbOff
+    ..text "Zobrazit pokročilou verzi – další demografické ukazatele a mediány jednotlivých hodnot"
+    ..attr \href \#
+    ..on \click ->
+        d3.event.preventDefault!
+        container.classed \dumbed no
+container.classed \dumbed yes

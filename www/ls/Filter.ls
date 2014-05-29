@@ -14,6 +14,12 @@ propertyNames =
     zamestnani         : "Podíl zaměstnanců"
     podnikatele        : "Podíl podnikatelů"
     osvc               : "Podíl OSVČ"
+    ucastPrc           : "Volební účast"
+
+descriptions =
+    nikdy_nezamestnani : "Lidé, kteří nikdy neměli práci"
+    podnikatele : "Zaměstnavatelé, vlastníci firem"
+    verici: "Tažením myši vyberete část grafu, která vás zajímá"
 
 ig.Filter = class Filter
     height: 100
@@ -23,7 +29,7 @@ ig.Filter = class Filter
         @localSortedData = @data.slice 0
             .sort (a, b) ~> a[@property] - b[@property]
         @element = parentElement.append \svg
-            ..attr \class \filter
+            ..attr \class "filter #{@property}"
             ..attr \height @height + @padding.0 + @padding.2
             ..attr \width @width + @padding.1 + @padding.3
         @axesGroup = @element.append \g
@@ -53,6 +59,7 @@ ig.Filter = class Filter
         @selectionText = @element.append \text
             ..attr \class \selection
             ..attr \y 32
+        if descriptions[@property] => @selectionText.text that
         @cancelSelectionText = @element.append \text
             ..attr \class \cancelSelection
             ..text "[zrušit výběr]"
